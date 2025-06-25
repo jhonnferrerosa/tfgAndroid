@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!---  jhonjames: recordar que esto es para conceder el permiso de que la aplicación cceda a internet. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!--  jhonjames: dentro de esta etiqueta he añadido esta linea ("android:usesCleartextTraffic="true") esto se debe a que desde Android 10, no está
+     permitido acceder a direcciones IP que no tengan HTTPS, en el caso de que tanto el servidor como esta aplicación cliente se vayan a llevar a producción,
+     esta linea hay que borrarla, ya que supongo que en el caso de que se lleve a producción a Flask se le va añadir HTTPS, que recordar que con letsScript es
+     gratis. -->
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DemosRobotsCiente"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity3"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
