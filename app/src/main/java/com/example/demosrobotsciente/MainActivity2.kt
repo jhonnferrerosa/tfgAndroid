@@ -75,7 +75,8 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     fun buscarInternetAceptarRobot (url : String){
-        val retrofit = Retrofit.Builder().baseUrl(url).addConverterFactory(GsonConverterFactory.create()).client(miOkHttpClientQucContieneLaCoockie).build()
+        val retrofit = Retrofit.Builder().baseUrl(url).addConverterFactory(GsonConverterFactory.create()).client(miOkHttpClientQucContieneLaCoockie).build();
+        //val retrofit = Retrofit.Builder().baseUrl(url).addConverterFactory(GsonConverterFactory.create()).build();
         val miPeticion = PeticionBody (miParametroCodigoQR = miRespuestaJSON?.codigoQR.toString(),  miParametroCorreoElectronicoDelAdministrador = miRespuestaJSON?.correoAdministrador.toString(), miParametroIdRobot = miRespuestaJSON?.idRobot.toString().toInt());
 
         runBlocking {
@@ -86,6 +87,11 @@ class MainActivity2 : AppCompatActivity() {
                     miRespuestaJSON = response.body();
                 }else{
                     val errorBody = response.errorBody()?.string();
+                    /// jhonjames: este es el print con el que descubrí que en cada petición POST, se necesitaba la cookie, ya que si no se tiene la coockie, el servidor de flask ni si quiera reacciona, para probar que ese era el
+                    // problema, hice la misma petición POST desde postman, sólo que eliminando la coockie, y el error que se obtiene en POSTMAN, es el mismo:  <!doctype html> <html lang=en> <title>400 Bad Request</title>
+                    //  <h1>Bad Request</h1>  <p>The CSRF session token is missing.</p>
+                    println  ("MainActivity2, buscarInternetAceptarRobot()--- este es el error boty: " + errorBody);
+                    println  ("MainActivity2, buscarInternetAceptarRobot()--- error codigo:  " + response.code());
                     val miObjetoGson  = Gson();
                     miRespuestaJSON = miObjetoGson.fromJson(errorBody, FlaskResponse::class.java);
                 }

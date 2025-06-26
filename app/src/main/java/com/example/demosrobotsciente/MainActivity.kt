@@ -17,6 +17,8 @@ import com.example.demosrobotsciente.VariableGlobal.miMensajeDeErrorGeneral
 import com.example.demosrobotsciente.VariableGlobal.miRespuestaJSON
 import com.example.demosrobotsciente.VariableGlobal.miOkHttpClientQucContieneLaCoockie
 import com.google.gson.Gson
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -86,16 +88,10 @@ class MainActivity : AppCompatActivity() {
             println ("MainActivity, miButton1leercodigoqr.setOnClickListener()--- se ha pulsado. ");
             //miTextView2direccionip.setText("http://192.168.1.129:5000/demostracionesroboticas/miQR1/");
             //direccionURLleidaDesdeElQR = "http://192.168.1.129:5000/demostracionesroboticas/miQR1/";
-            miTextView2direccionip.setText("http://192.168.1.129:5000/demostracionesroboticas/miQR1/jhon@gmail.com/");
-            direccionURLleidaDesdeElQR = "http://192.168.1.129:5000/demostracionesroboticas/miQR1/jhon@gmail.com/";
-            // con esto sólo consigo http://localhost:5000, es decir el dominio donde estámontado el servidor. Pero cuidado porque no me quedo con la barra final /.
-            miDominioDelaWeb = conseguirDominio (direccionURLleidaDesdeElQR);
-            miEndpointAlQueApuntoEnActivity = conseguirEndpoint(direccionURLleidaDesdeElQR);
-            println ("MainActivity, miButton1leercodigoqr.setOnClickListener()--- " + miDominioDelaWeb);
-            println ("MainActivity, miButton1leercodigoqr.setOnClickListener()---  " + miEndpointAlQueApuntoEnActivity);
+            //miTextView2direccionip.setText("http://192.168.1.129:5000/demostracionesroboticas/miQR1/jhon@gmail.com/");
+            //direccionURLleidaDesdeElQR = "http://192.168.1.129:5000/demostracionesroboticas/miQR1/jhon@gmail.com/";
 
-            miDominioDelaWeb
-            miButton2solicirarrobot.isEnabled = true;
+            scanearCodigo ();
             println ("MainActivity, miButton1leercodigoqr.setOnClickListener()--- fin del escaneo. ");
         }
 
@@ -120,6 +116,7 @@ class MainActivity : AppCompatActivity() {
         println("buscarInternet()--- se ejecuta con la URL: $url");
         val okHttpClient = OkHttpClient.Builder().cookieJar(PersistentCookieJar()).build();
         val retrofit = Retrofit.Builder().baseUrl(url).addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build();
+        //val retrofit = Retrofit.Builder().baseUrl(url).addConverterFactory(GsonConverterFactory.create()).build();
         runBlocking {
             try{
                 val apiService = retrofit.create(APIservicio::class.java);
@@ -167,6 +164,29 @@ class MainActivity : AppCompatActivity() {
             }else{
                 miMensajeDeErrorGeneral = "MainActivity.buscarInternet()---" + "No se reconoce la respuesta del mensaje del servidor. (Aunque el JSON sí ha sido recivido). Las demostraciones robóticas no están disponibles en este momento.";
                 miTextView3MensajeAviso.setText (miMensajeDeErrorGeneral);
+            }
+        }
+    }
+    fun scanearCodigo (){
+        var miOptions = ScanOptions();
+        miOptions.setBeepEnabled(true);
+        miOptions.setOrientationLocked(true);
+        miOptions.setCaptureActivity(Capturar::class.java);
+        barraLanzadora.launch(miOptions);
+    }
+
+    private val barraLanzadora = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents != null) {
+            direccionURLleidaDesdeElQR = result.contents;
+            direccionURLleidaDesdeElQR = direccionURLleidaDesdeElQR + "/";
+            if (direccionURLleidaDesdeElQR.length < 40){
+                miMensajeDeErrorGeneral = "Error al leer el código QR. ";
+            }else{
+                miButton2solicirarrobot.isEnabled = true;
+                miTextView2direccionip.setText(direccionURLleidaDesdeElQR);
+                // con esto sólo consigo http://localhost:5000, es decir el dominio donde estámontado el servidor. Pero cuidado porque no me quedo con la barra final /.
+                miDominioDelaWeb = conseguirDominio (direccionURLleidaDesdeElQR);
+                miEndpointAlQueApuntoEnActivity = conseguirEndpoint(direccionURLleidaDesdeElQR);
             }
         }
     }

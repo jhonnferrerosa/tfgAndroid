@@ -35,6 +35,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--- jhonjames: este código lo pongo aquí porque la ventana que se abre para leer el código QR de los carteles, es una ventana más.  Por lo tanto es una actividad más del proyecto, al igual que MainActivity, MainActivity2 y MainActivity3 -->
+        <activity
+            android:name=".Capturar"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme" />
     </application>
-
 </manifest>

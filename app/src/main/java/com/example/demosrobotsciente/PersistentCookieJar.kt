@@ -12,7 +12,7 @@ class PersistentCookieJar : CookieJar{
 
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-        //println ("PersistentCookieJar, saveFromResponse() --- ");
+        println ("PersistentCookieJar, saveFromResponse() --- ");
         cookieStore[url.host] = cookies;
         //println("PersistentCookieJar(), saveFromResponse()---  === Cookies guardadas para ${url.host} ===");
         //cookies.forEach { cookie ->
@@ -24,7 +24,7 @@ class PersistentCookieJar : CookieJar{
     }
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
-        //println ("PersistentCookieJar, loadForRequest() --- ");
+        println ("PersistentCookieJar, loadForRequest() --- ");
         // Recupera cookies para el dominio de la petición
         val cookies = cookieStore[url.host] ?: emptyList();
         //println("PersistentCookieJar(), loadForRequest()--- === Cookies enviadas a ${url.host} ===");
